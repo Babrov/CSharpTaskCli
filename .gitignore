@@ -1,0 +1,34 @@
+# .NET 8
+*.dll
+*.exe
+*.pdb
+*.cache
+*.ilk
+*.log
+*.obj
+*.lib
+*.nupkg
+*.snupkg
+*.sou
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.tlog
+*.vspxproj
+# Include if required in project
+!src/**/*.dll
+!src/**/*.exe
+# Build directories
+**/bin/
+**/obj/
+# Windows-specific files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+# Avoid ignoring folders named like .NET secrets folder
+!Secret/*.user
+# Dotnet user secrets
+**/secrets.json
+<caret>
