@@ -1,39 +1,56 @@
-﻿if (args.Length == 0)
+﻿using CSharpConsoleTaskTracker;
+
+if (args.Length == 0)
 {
     Console.WriteLine("Please enter a valid command. Use --help for available commands.");
     return;
 }
 
-string[] availableCommands = ["add", "update", "delete", "exit"];
 string command = args[0].ToLower();
 
-if (!availableCommands.Contains(command))
+if (!Commands.Validate(command))
 {
     Console.WriteLine($"Unknown command '{command}'. Use --help for available commands.");
 }
 
-if (command == "--help")
+if (command == Commands.Help)
 {
-    Console.WriteLine($"Available commands: {string.Join(",", availableCommands)}");
+    Console.WriteLine($"Available commands: {string.Join(",", Commands.Values)}");
 }
 
-if (command == "add")
-{
-    Console.WriteLine($"Adding");
+var storage = new JsonStorage();
 
+if (command == Commands.Add)
+{
+    int newId = storage.GetNewId();
+
+    string description = args[1];
+    TaskItem newItem = new TaskItem(newId, description);
+
+    var createdId = storage.Add(newItem);
+
+    Console.WriteLine($"Successfully created item, Id: {createdId}");
+}
+
+if (command == Commands.Update)
+{
     return;
 }
 
-if (command == "update")
+if (command == Commands.Delete)
 {
-    Console.WriteLine($"Updating");
-
     return;
 }
 
-if (command == "Delete")
+if (command == Commands.MarkInProgress)
 {
-    Console.WriteLine($"Adding");
+}
 
-    return;
+if (command == Commands.MarkDone)
+{
+}
+
+if (command == Commands.List)
+{
+    // status (done, in-progress, todo );
 }
