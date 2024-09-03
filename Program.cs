@@ -22,14 +22,18 @@ var storage = new JsonStorage();
 
 if (command == Commands.Add)
 {
-    int newId = storage.GetNewId();
-
-    string description = args[1];
-    TaskItem newItem = new TaskItem(newId, description);
-
-    var createdId = storage.Add(newItem);
-
-    Console.WriteLine($"Successfully created item, Id: {createdId}");
+    try
+    {
+        string description = args[1];
+        TaskItem newItem = new TaskItem(description);
+        var createdId = storage.Add(newItem);
+        Console.WriteLine($"Successfully created item, Id: {createdId}");
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e);
+        throw;
+    }
 }
 
 if (command == Commands.Update)
@@ -39,7 +43,28 @@ if (command == Commands.Update)
 
 if (command == Commands.Delete)
 {
-    return;
+    string id = args[1];
+
+    if (!int.TryParse(id, out int intId))
+    {
+        Console.WriteLine($"Failed deleting item, Id is not valid.");
+    }
+
+    try
+    {
+        int result = storage.Delete(intId);
+
+        if (result > 0)
+        {
+            Console.WriteLine($"Successfully deleted item, Id: {id}");
+        }
+
+        Console.WriteLine($"Failed deleting item, Id: {id}");
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine($"Failed deleting item.");
+    }
 }
 
 if (command == Commands.MarkInProgress)
@@ -50,7 +75,18 @@ if (command == Commands.MarkDone)
 {
 }
 
-if (command == Commands.List)
-{
-    // status (done, in-progress, todo );
-}
+//if (command == Commands.List)
+//{
+//    // status (done, in-progress, todo );
+//    string status = args[1];
+//
+//    if (string.IsNullOrWhiteSpace(status))
+//    {
+//        var list = storage.List(status);
+//
+//        Console.WriteLine($"Successfully got items list with status {status},\n qwe");
+//    }
+//
+//
+//    var list = storage.List();
+//}

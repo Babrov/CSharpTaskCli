@@ -13,40 +13,77 @@ public class JsonStorage
             File.Create(FilePath);
         }
     }
-    
-    public int GetLatestId()
+
+    public List<TaskItem> List(string? status = default)
     {
-        return File.ReadAllLines(FilePath).Length;
+        List<string> lines = File.ReadLines(FilePath).ToList();
+
+        return lines.Select(line => JsonSerializer.Deserialize<TaskItem>(line)).ToList();
     }
-    
-    public int GetNewId()
+
+    public TaskItem? GetById(int id)
     {
-        int latestId = GetLatestId();
-        
-        return latestId + 1;
+        string? itemByLine = ReadLineByNumber(id);
+
+        if (itemByLine is not null)
+        {
+            return JsonSerializer.Deserialize<TaskItem>(itemByLine);
+        }
+
+        return null;
     }
-    
-    public List<T> GetAll<T>(string status)
-    {
-        return List
-    }
-    
-    public T GetById<T>(int id)
-    {
-        
-        
-        return JsonSerializer.Deserialize<T>();
-    }
-    
+
     public int Add(TaskItem item)
     {
+        item.Id = GetCount() + 1;
+
         string serializedItem = JsonSerializer.Serialize(item);
-        
-        return 0;
+
+        WriteNewLine(serializedItem);
+
+        return item.Id;
     }
-    
-    public void SaveChanges()
+
+    public int Delete(int id)
     {
-        
+        var lines = File.ReadAllLines(FilePath).ToList();
+
+        if (id > 0 && id <= lines.Count)
+        {
+            lines.RemoveAt(id - 1);
+            File.WriteAllLines(FilePath, lines);
+            return id;
+        }
+
+        return -1; // Indicate failure
+    }
+
+    private int GetCount()
+    {
+        return File.ReadLines(FilePath).Count();
+    }
+
+    private void WriteNewLine(string content)
+    {
+        using (StreamWriter sw = new StreamWriter(FilePath, true))
+        {
+            sw.WriteLine(content);
+        }
+    }
+
+    private string? ReadLineByNumber(int lineNumber)
+    {
+        using (StreamReader sr = new StreamReader(FilePath))
+        {
+            for (int i = 0; i < lineNumber - 1; i++)
+            {
+                if (sr.ReadLine() == null)
+                {
+                    return null;
+                }
+            }
+
+            return sr.ReadLine();
+        }
     }
 }

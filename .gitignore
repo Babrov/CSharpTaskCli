@@ -32,3 +32,4 @@ $RECYCLE.BIN/
 # Dotnet user secrets
 **/secrets.json
 <caret>
+storage.json
